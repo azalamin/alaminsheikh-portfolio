@@ -23,7 +23,7 @@ export default async function AdminProjectsPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl">Projects</h1>
-        <Button render={<Link href="/admin/projects/new" />}>New project</Button>
+        <Button render={<Link href="/admin/projects/new" />} nativeButton={false}>New project</Button>
       </div>
 
       {projects.length === 0 ? (
@@ -32,7 +32,7 @@ export default async function AdminProjectsPage() {
           title="No case studies yet"
           description="Add a project to feature it on the public portfolio."
           action={
-            <Button render={<Link href="/admin/projects/new" />} variant="outline" size="sm">
+            <Button render={<Link href="/admin/projects/new" />} nativeButton={false} variant="outline" size="sm">
               New project
             </Button>
           }

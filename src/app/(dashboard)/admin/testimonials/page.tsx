@@ -23,7 +23,7 @@ export default async function AdminTestimonialsPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl">Testimonials</h1>
-        <Button render={<Link href="/admin/testimonials/new" />}>New testimonial</Button>
+        <Button render={<Link href="/admin/testimonials/new" />} nativeButton={false}>New testimonial</Button>
       </div>
 
       {testimonials.length === 0 ? (
@@ -32,7 +32,7 @@ export default async function AdminTestimonialsPage() {
           title="No testimonials yet"
           description="Add a client quote to build trust on the public portfolio."
           action={
-            <Button render={<Link href="/admin/testimonials/new" />} variant="outline" size="sm">
+            <Button render={<Link href="/admin/testimonials/new" />} nativeButton={false} variant="outline" size="sm">
               New testimonial
             </Button>
           }

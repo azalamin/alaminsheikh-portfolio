@@ -21,7 +21,7 @@ export default async function AdminVideosPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl">Video projects</h1>
-        <Button render={<Link href="/admin/videos/new" />}>New project</Button>
+        <Button render={<Link href="/admin/videos/new" />} nativeButton={false}>New project</Button>
       </div>
 
       {projects.length === 0 ? (
@@ -30,7 +30,7 @@ export default async function AdminVideosPage() {
           title="No video projects yet"
           description="Create a project and assign it to an editor to start tracking progress."
           action={
-            <Button render={<Link href="/admin/videos/new" />} variant="outline" size="sm">
+            <Button render={<Link href="/admin/videos/new" />} nativeButton={false} variant="outline" size="sm">
               New project
             </Button>
           }

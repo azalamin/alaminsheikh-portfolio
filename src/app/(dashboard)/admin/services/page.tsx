@@ -23,7 +23,7 @@ export default async function AdminServicesPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl">Services</h1>
-        <Button render={<Link href="/admin/services/new" />}>New service</Button>
+        <Button render={<Link href="/admin/services/new" />} nativeButton={false}>New service</Button>
       </div>
 
       {services.length === 0 ? (
@@ -32,7 +32,7 @@ export default async function AdminServicesPage() {
           title="No services yet"
           description="Add a service to list on the public portfolio."
           action={
-            <Button render={<Link href="/admin/services/new" />} variant="outline" size="sm">
+            <Button render={<Link href="/admin/services/new" />} nativeButton={false} variant="outline" size="sm">
               New service
             </Button>
           }
