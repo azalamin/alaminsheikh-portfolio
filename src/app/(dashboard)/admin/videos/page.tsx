@@ -68,7 +68,9 @@ export default async function AdminVideosPage() {
                   <TableCell>
                     <PaymentStatusBadge status={project.paymentStatus} />
                   </TableCell>
-                  <TableCell>{formatCurrency(project.amount.toString())}</TableCell>
+                  <TableCell className="tabular-nums">
+                    {formatCurrency(project.amount.toString())}
+                  </TableCell>
                   <TableCell className="text-muted-foreground">
                     {project.deadline.toLocaleDateString()}
                   </TableCell>

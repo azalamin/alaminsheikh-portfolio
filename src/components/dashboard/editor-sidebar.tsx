@@ -21,7 +21,7 @@ export function EditorSidebar() {
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader className="px-4 py-4">
-        <span className="font-heading text-lg">My videos</span>
+        <span className="text-lg font-semibold">My videos</span>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

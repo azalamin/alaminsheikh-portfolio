@@ -37,7 +37,7 @@ export function AdminSidebar() {
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader className="px-4 py-4">
-        <span className="font-heading text-lg">Admin</span>
+        <span className="text-lg font-semibold">Admin</span>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>

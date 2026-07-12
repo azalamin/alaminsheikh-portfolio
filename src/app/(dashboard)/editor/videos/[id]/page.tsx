@@ -42,9 +42,11 @@ export default async function EditorVideoDetailPage({
         </CardHeader>
         <CardContent className="flex flex-col gap-1 text-sm text-muted-foreground">
           <p>{project.description}</p>
-          <p className="pt-2">Agreed amount: {formatCurrency(project.amount.toString())}</p>
+          <p className="pt-2 tabular-nums">
+            Agreed amount: {formatCurrency(project.amount.toString())}
+          </p>
           <p>Deadline: {project.deadline.toLocaleDateString()}</p>
-          <p>{project.progress}% complete</p>
+          <p className="tabular-nums">{project.progress}% complete</p>
         </CardContent>
       </Card>
 
@@ -69,7 +71,8 @@ export default async function EditorVideoDetailPage({
             {project.progressUpdates.map((update) => (
               <li key={update.id} className="border-l-2 pl-4">
                 <p className="text-sm text-muted-foreground">
-                  {update.createdAt.toLocaleString()} · {update.progress}%
+                  {update.createdAt.toLocaleString()} ·{" "}
+                  <span className="tabular-nums">{update.progress}%</span>
                 </p>
                 <p>{update.note}</p>
               </li>

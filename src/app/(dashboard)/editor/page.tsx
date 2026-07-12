@@ -42,9 +42,10 @@ function ProjectList({
             </CardHeader>
             <CardContent className="flex flex-col gap-1 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
               <span>
-                {project.progress}% complete · Deadline {project.deadline.toLocaleDateString()}
+                <span className="tabular-nums">{project.progress}%</span> complete · Deadline{" "}
+                {project.deadline.toLocaleDateString()}
               </span>
-              <span>{formatCurrency(project.amount.toString())}</span>
+              <span className="tabular-nums">{formatCurrency(project.amount.toString())}</span>
             </CardContent>
           </Card>
         </Link>

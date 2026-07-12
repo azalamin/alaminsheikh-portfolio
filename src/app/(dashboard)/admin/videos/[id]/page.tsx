@@ -50,9 +50,9 @@ export default async function AdminVideoDetailPage({
           <CardTitle>Progress</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-1 text-sm text-muted-foreground">
-          <p>{project.progress}% complete</p>
+          <p className="tabular-nums">{project.progress}% complete</p>
           <p>Editor: {project.editor?.name ?? "Unassigned"}</p>
-          <p>Amount: {formatCurrency(project.amount.toString())}</p>
+          <p className="tabular-nums">Amount: {formatCurrency(project.amount.toString())}</p>
           <p>Deadline: {project.deadline.toLocaleDateString()}</p>
           <p>
             Estimated completion:{" "}
@@ -89,7 +89,8 @@ export default async function AdminVideoDetailPage({
             {project.progressUpdates.map((update) => (
               <li key={update.id} className="border-l-2 pl-4">
                 <p className="text-sm text-muted-foreground">
-                  {update.createdAt.toLocaleString()} · {update.author.name} · {update.progress}%
+                  {update.createdAt.toLocaleString()} · {update.author.name} ·{" "}
+                  <span className="tabular-nums">{update.progress}%</span>
                 </p>
                 <p>{update.note}</p>
               </li>
