@@ -1,5 +1,6 @@
 "use client";
 
+import { useSyncExternalStore } from "react";
 import { useTheme } from "next-themes";
 import { Sun, Moon, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,13 +17,35 @@ const options = [
   { value: "system", label: "System", icon: Monitor },
 ] as const;
 
+function subscribe() {
+  return () => {};
+}
+
+function getSnapshot() {
+  return true;
+}
+
+function getServerSnapshot() {
+  return false;
+}
+
+/**
+ * next-themes resolves the real theme via a blocking inline script before
+ * React hydrates, so `theme` is already correct on the client's first
+ * render — it does NOT match the server's blind render. useSyncExternalStore
+ * is the framework-sanctioned way to force that first client render to use
+ * the server snapshot (false) and only flip to the real value in the
+ * post-hydration pass React schedules for it automatically.
+ */
+function useMounted() {
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+}
+
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+  const mounted = useMounted();
 
-  // `theme` is undefined on the server and on the client's first render,
-  // until next-themes resolves it — use that as the mount signal instead
-  // of a separate effect, so this never causes a hydration mismatch.
-  if (theme === undefined) {
+  if (!mounted) {
     return (
       <Button
         variant="ghost"

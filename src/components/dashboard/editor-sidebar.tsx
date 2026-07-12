@@ -13,10 +13,12 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 export function EditorSidebar() {
   const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -29,7 +31,13 @@ export function EditorSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton isActive={pathname === "/editor"} render={<Link href="/editor" />}>
+                <SidebarMenuButton
+                  isActive={pathname === "/editor"}
+                  onClick={() => {
+                    if (isMobile) setOpenMobile(false);
+                  }}
+                  render={<Link href="/editor" />}
+                >
                   <Clapperboard />
                   <span>My videos</span>
                 </SidebarMenuButton>

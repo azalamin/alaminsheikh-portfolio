@@ -4,6 +4,7 @@ import { getVideoProjectById } from "@/services/video-project-service";
 import { formatCurrency } from "@/lib/currency";
 import { ProgressUpdateForm } from "@/components/progress-update-form";
 import { VideoStatusBadge, PaymentStatusBadge } from "@/components/status-badges";
+import { LinkifiedText } from "@/components/linkified-text";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
@@ -74,7 +75,9 @@ export default async function EditorVideoDetailPage({
                   {update.createdAt.toLocaleString()} ·{" "}
                   <span className="tabular-nums">{update.progress}%</span>
                 </p>
-                <p>{update.note}</p>
+                <p>
+                  <LinkifiedText text={update.note} />
+                </p>
               </li>
             ))}
           </ol>

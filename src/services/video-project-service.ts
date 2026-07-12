@@ -59,7 +59,7 @@ export function getVideoProjectById(id: string) {
       editor: { select: editorSummarySelect },
       progressUpdates: {
         select: progressUpdateSelect,
-        orderBy: { createdAt: "asc" },
+        orderBy: { createdAt: "desc" },
       },
     },
   });

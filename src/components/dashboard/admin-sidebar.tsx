@@ -20,6 +20,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
 const navLinks = [
@@ -33,6 +34,7 @@ const navLinks = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+  const { isMobile, setOpenMobile } = useSidebar();
 
   return (
     <Sidebar collapsible="offcanvas">
@@ -50,6 +52,9 @@ export function AdminSidebar() {
                   <SidebarMenuItem key={link.href}>
                     <SidebarMenuButton
                       isActive={isActive}
+                      onClick={() => {
+                        if (isMobile) setOpenMobile(false);
+                      }}
                       render={<Link href={link.href} />}
                     >
                       <link.icon />

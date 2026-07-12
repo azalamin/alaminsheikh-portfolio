@@ -8,6 +8,7 @@ import { VideoProjectForm } from "@/components/video-project-form";
 import { VideoStatusBadge, PaymentStatusBadge } from "@/components/status-badges";
 import { formatCurrency } from "@/lib/currency";
 import { ActionButton } from "@/components/dashboard/action-button";
+import { LinkifiedText } from "@/components/linkified-text";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
@@ -92,7 +93,9 @@ export default async function AdminVideoDetailPage({
                   {update.createdAt.toLocaleString()} · {update.author.name} ·{" "}
                   <span className="tabular-nums">{update.progress}%</span>
                 </p>
-                <p>{update.note}</p>
+                <p>
+                  <LinkifiedText text={update.note} />
+                </p>
               </li>
             ))}
           </ol>
