@@ -36,3 +36,25 @@ export async function sendEditorInviteEmail(params: {
     ].join("\n"),
   });
 }
+
+export async function sendContactNotificationEmail(params: {
+  name: string;
+  email: string;
+  message: string;
+}) {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) return;
+
+  await transporter.sendMail({
+    from: GMAIL_USER,
+    to: adminEmail,
+    replyTo: params.email,
+    subject: `New contact form submission from ${params.name}`,
+    text: [
+      `Name: ${params.name}`,
+      `Email: ${params.email}`,
+      "",
+      params.message,
+    ].join("\n"),
+  });
+}

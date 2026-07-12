@@ -29,6 +29,27 @@ export function setProjectPublished(id: string, published: boolean) {
   return prisma.project.update({ where: { id }, data: { published } });
 }
 
+// Projects — public (published only)
+
+export function listFeaturedProjects() {
+  return prisma.project.findMany({
+    where: { published: true, featured: true },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+    take: 6,
+  });
+}
+
+export function listPublishedProjects() {
+  return prisma.project.findMany({
+    where: { published: true },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+  });
+}
+
+export function getPublishedProjectBySlug(slug: string) {
+  return prisma.project.findFirst({ where: { slug, published: true } });
+}
+
 // Testimonials
 
 export function listTestimonials() {
@@ -55,6 +76,15 @@ export function setTestimonialPublished(id: string, published: boolean) {
   return prisma.testimonial.update({ where: { id }, data: { published } });
 }
 
+// Testimonials — public (published only)
+
+export function listPublishedTestimonials() {
+  return prisma.testimonial.findMany({
+    where: { published: true },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
 // Services
 
 export function listServices() {
@@ -79,4 +109,13 @@ export function deleteService(id: string) {
 
 export function setServicePublished(id: string, published: boolean) {
   return prisma.service.update({ where: { id }, data: { published } });
+}
+
+// Services — public (published only)
+
+export function listPublishedServices() {
+  return prisma.service.findMany({
+    where: { published: true },
+    orderBy: [{ order: "asc" }, { createdAt: "desc" }],
+  });
 }
