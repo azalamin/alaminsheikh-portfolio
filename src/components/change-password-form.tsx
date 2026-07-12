@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import { changePasswordAction } from "@/actions/change-password";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,12 @@ import {
 
 export function ChangePasswordForm({ forced }: { forced: boolean }) {
   const [state, action, pending] = useActionState(changePasswordAction, undefined);
+
+  useEffect(() => {
+    if (state?.error) {
+      toast.error(state.error);
+    }
+  }, [state]);
 
   return (
     <Card className="w-full max-w-sm">

@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/guards";
 import { videoProjectSchema } from "@/lib/validations/video-project";
 import {
@@ -11,7 +10,10 @@ import {
 } from "@/services/video-project-service";
 import type { PaymentStatus } from "@/generated/prisma/enums";
 
-export type VideoProjectFormState = { error: string } | undefined;
+export type VideoProjectFormState =
+  | { error: string }
+  | { success: true; id: string }
+  | undefined;
 
 function parseVideoProjectForm(formData: FormData) {
   return videoProjectSchema.safeParse({
@@ -37,7 +39,7 @@ export async function createVideoProjectAction(
   const project = await createVideoProject(parsed.data);
 
   revalidatePath("/admin/videos");
-  redirect(`/admin/videos/${project.id}`);
+  return { success: true, id: project.id };
 }
 
 export async function updateVideoProjectAction(
@@ -56,7 +58,7 @@ export async function updateVideoProjectAction(
 
   revalidatePath(`/admin/videos/${id}`);
   revalidatePath("/admin/videos");
-  redirect(`/admin/videos/${id}`);
+  return { success: true, id };
 }
 
 export async function togglePaymentStatusAction(

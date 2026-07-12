@@ -1,7 +1,7 @@
 # PRD — Personal Portfolio Website + Project Dashboard
 
 **Owner:** Al Amin Sheikh
-**Status:** Draft v1.4
+**Status:** Draft v1.5
 **Last updated:** July 13, 2026
 
 ---
@@ -82,7 +82,8 @@ A personal portfolio website targeting premium clients, paired with a private da
 - Update video status: `NOT_STARTED → IN_PROGRESS → IN_REVIEW → COMPLETED`.
 - Update progress percentage (0–100) and estimated completion date.
 - Post progress notes (e.g., "color grading done, sound design remaining"). Each update is stored as a new record — history is never overwritten.
-- **Cannot** view or modify payment status, portfolio content, or other users.
+- Can **view** (read-only) the payment status (Paid/Unpaid) and agreed amount on their own assigned projects — for their own visibility into what's owed.
+- **Cannot** modify payment status under any circumstance — the mutation stays admin-guarded server-side (`requireAdmin()` in the single `togglePaymentStatusAction`), not merely hidden in the UI. Also cannot modify portfolio content or other users.
 
 ## 5. Data Model (summary)
 
@@ -104,6 +105,23 @@ Money is stored as `Decimal(10,2)` — never floats.
 - **UI:** TailwindCSS + shadcn/ui; Framer Motion for animation.
 - **Validation:** Zod on every server action input.
 - **Hosting:** Vercel.
+
+**Design tokens** (wired into the shadcn theme via Tailwind v4 `@theme` + CSS variables — components consume tokens, never hardcoded colors):
+
+| Token | Light | Dark | Use |
+|-------|-------|------|-----|
+| `background` | `#FAFAF8` | `#0C0C0D` | Page background |
+| `surface` (`card`/`popover`/`sidebar`) | `#FFFFFF` | `#161617` | Elevated panels |
+| `ink` (`foreground`) | `#111111` | `#F2F2F0` | Body text |
+| `muted` | `#6B6B6B` | lightened for contrast | Secondary text |
+| `border` | `#E6E4DF` | `#262628` | Hairline borders |
+| `primary` (accent) | `#8A6A3B` (muted bronze) | lightened for contrast | CTAs, active nav, links — the single accent color |
+| `success` | `#2E6B4F` | lightened for contrast | Payment status: Paid |
+| `warning` | `#8A4B2A` | lightened for contrast | Payment status: Unpaid |
+
+Typography: Instrument Serif for display headings (`font-heading`, regular weight only — no bold headings), Inter for UI/body text (`font-sans`), via `next/font`.
+
+**Currency:** all money is Bangladeshi Taka (BDT), formatted through a single `formatCurrency()` util (`Intl.NumberFormat('en-BD', { style: 'currency', currency: 'BDT', currencyDisplay: 'narrowSymbol' })` → `৳`). No hardcoded currency symbols in components. The Prisma field stays `Decimal(10,2)`.
 
 **Folder structure:**
 
@@ -140,7 +158,7 @@ src/
 ## 8. Success Criteria
 
 - Admin can create an editor, assign a video, and see progress updates without touching code.
-- Editor can log in and update only their own projects; payment fields are invisible/immutable to them.
+- Editor can log in and update only their own projects; payment fields are visible (read-only) but immutable to them.
 - Public site loads fast (Lighthouse 90+), looks premium on mobile and desktop.
 - All content changes go live from the dashboard alone.
 - Complete progress + payment history retained for every video project.
@@ -151,7 +169,9 @@ src/
 - **Email:** Gmail SMTP via Nodemailer (app password, isolated in `services/mail.ts` so a later swap to Resend is one file).
 - **Image hosting:** Cloudinary for case study covers and media.
 - **Domain:** Vercel free subdomain for launch; custom domain (alaminsheikh.com) later — DNS-only change.
-- **Payment states:** strictly PAID / UNPAID, admin-only toggle.
+- **Payment states:** strictly PAID / UNPAID, admin-only toggle. Editors may **view** payment status and amount on their own projects (read-only); the mutation itself remains admin-guarded server-side regardless of UI visibility.
+- **Design system:** minimalist premium palette (off-white/near-black neutrals, single muted-bronze accent, success/warning reserved exclusively for payment status) wired into shadcn/Tailwind v4 theme tokens — see Technical Architecture for the full token table.
+- **Currency:** switched from USD to BDT (৳) — all client work is priced and paid in Bangladeshi Taka.
 - **Auto-archive:** videos that are COMPLETED + PAID are automatically moved out of the editor's active list into an archive view (still visible to Admin, and to Editor under an "Archived" tab).
 
 

@@ -17,10 +17,10 @@ export default async function AdminUsersPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="text-2xl font-semibold">Editors</h1>
+      <h1 className="text-2xl">Editors</h1>
 
       <div>
-        <h2 className="text-lg font-medium mb-4">Add an editor</h2>
+        <h2 className="text-lg mb-4">Add an editor</h2>
         <CreateEditorForm />
       </div>
 
@@ -49,13 +49,13 @@ export default async function AdminUsersPage() {
                 <TableCell className="font-medium">{editor.name}</TableCell>
                 <TableCell className="text-muted-foreground">{editor.email}</TableCell>
                 <TableCell>
-                  <Badge variant={editor.banned ? "destructive" : "default"}>
+                  <Badge variant={editor.banned ? "destructive" : "success"}>
                     {editor.banned ? "Deactivated" : "Active"}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
                   {editor.banned ? (
-                    <UnbanEditorButton userId={editor.id} />
+                    <UnbanEditorButton userId={editor.id} name={editor.name} />
                   ) : (
                     <BanEditorButton userId={editor.id} name={editor.name} />
                   )}

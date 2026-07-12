@@ -4,7 +4,7 @@ import { TestimonialForm } from "@/components/content/testimonial-form";
 export default function NewTestimonialPage() {
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold">New testimonial</h1>
+      <h1 className="text-2xl">New testimonial</h1>
       <TestimonialForm action={createTestimonialAction} submitLabel="Create testimonial" />
     </div>
   );

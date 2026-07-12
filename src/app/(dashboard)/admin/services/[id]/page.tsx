@@ -17,7 +17,7 @@ export default async function EditServicePage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold">Edit service</h1>
+      <h1 className="text-2xl">Edit service</h1>
       <ServiceForm
         action={updateServiceAction.bind(null, service.id)}
         submitLabel="Save changes"

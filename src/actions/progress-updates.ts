@@ -6,7 +6,7 @@ import { progressUpdateSchema } from "@/lib/validations/video-project";
 import { addProgressUpdate } from "@/services/video-project-service";
 import { prisma } from "@/lib/prisma";
 
-export type ProgressUpdateFormState = { error: string } | undefined;
+export type ProgressUpdateFormState = { error: string } | { success: true } | undefined;
 
 export async function postProgressUpdateAction(
   videoProjectId: string,
@@ -41,4 +41,5 @@ export async function postProgressUpdateAction(
 
   revalidatePath(`/editor/videos/${videoProjectId}`);
   revalidatePath("/editor");
+  return { success: true };
 }

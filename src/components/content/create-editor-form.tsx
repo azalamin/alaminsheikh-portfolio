@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useRef } from "react";
+import { toast } from "sonner";
 import { createEditorAction } from "@/actions/users";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +12,11 @@ export function CreateEditorForm() {
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (state && "success" in state) {
+    if (!state) return;
+    if ("error" in state) {
+      toast.error(state.error);
+    } else if ("success" in state) {
+      toast.success("Editor account created — a temporary password was emailed to them.");
       formRef.current?.reset();
     }
   }, [state]);
@@ -30,11 +35,6 @@ export function CreateEditorForm() {
       {state && "error" in state && (
         <p className="text-sm text-destructive" role="alert">
           {state.error}
-        </p>
-      )}
-      {state && "success" in state && (
-        <p className="text-sm text-muted-foreground" role="status">
-          Editor account created — a temporary password was emailed to them.
         </p>
       )}
 

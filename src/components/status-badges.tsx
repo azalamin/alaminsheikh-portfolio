@@ -15,7 +15,7 @@ export function VideoStatusBadge({ status }: { status: VideoStatus }) {
 
 export function PaymentStatusBadge({ status }: { status: PaymentStatus }) {
   return (
-    <Badge variant={status === "PAID" ? "default" : "destructive"}>
+    <Badge variant={status === "PAID" ? "success" : "warning"}>
       {status === "PAID" ? "Paid" : "Unpaid"}
     </Badge>
   );

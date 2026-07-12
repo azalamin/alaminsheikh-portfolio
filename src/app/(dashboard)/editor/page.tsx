@@ -1,22 +1,29 @@
 import Link from "next/link";
+import { Clapperboard } from "lucide-react";
 import { getSession } from "@/lib/guards";
 import {
   listVideoProjectsForEditor,
   splitActiveAndArchived,
 } from "@/services/video-project-service";
-import { VideoStatusBadge } from "@/components/status-badges";
+import { formatCurrency } from "@/lib/currency";
+import { VideoStatusBadge, PaymentStatusBadge } from "@/components/status-badges";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/dashboard/empty-state";
 
 function ProjectList({
   projects,
-  emptyLabel,
+  emptyTitle,
+  emptyDescription,
 }: {
   projects: Awaited<ReturnType<typeof listVideoProjectsForEditor>>;
-  emptyLabel: string;
+  emptyTitle: string;
+  emptyDescription: string;
 }) {
   if (projects.length === 0) {
-    return <p className="text-sm text-muted-foreground">{emptyLabel}</p>;
+    return (
+      <EmptyState icon={Clapperboard} title={emptyTitle} description={emptyDescription} />
+    );
   }
 
   return (
@@ -25,13 +32,19 @@ function ProjectList({
         <Link key={project.id} href={`/editor/videos/${project.id}`}>
           <Card className="hover:bg-muted/50 transition-colors">
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between gap-2">
                 <CardTitle className="text-base">{project.title}</CardTitle>
-                <VideoStatusBadge status={project.status} />
+                <div className="flex items-center gap-2">
+                  <VideoStatusBadge status={project.status} />
+                  <PaymentStatusBadge status={project.paymentStatus} />
+                </div>
               </div>
             </CardHeader>
-            <CardContent className="text-sm text-muted-foreground">
-              {project.progress}% complete · Deadline {project.deadline.toLocaleDateString()}
+            <CardContent className="flex flex-col gap-1 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+              <span>
+                {project.progress}% complete · Deadline {project.deadline.toLocaleDateString()}
+              </span>
+              <span>{formatCurrency(project.amount.toString())}</span>
             </CardContent>
           </Card>
         </Link>
@@ -47,17 +60,25 @@ export default async function EditorHomePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold">My videos</h1>
+      <h1 className="text-2xl">My videos</h1>
       <Tabs defaultValue="active">
         <TabsList>
           <TabsTrigger value="active">Active ({active.length})</TabsTrigger>
           <TabsTrigger value="archived">Archived ({archived.length})</TabsTrigger>
         </TabsList>
         <TabsContent value="active" className="mt-4">
-          <ProjectList projects={active} emptyLabel="No active projects assigned to you." />
+          <ProjectList
+            projects={active}
+            emptyTitle="No active projects"
+            emptyDescription="Projects assigned to you will show up here."
+          />
         </TabsContent>
         <TabsContent value="archived" className="mt-4">
-          <ProjectList projects={archived} emptyLabel="No archived projects yet." />
+          <ProjectList
+            projects={archived}
+            emptyTitle="No archived projects yet"
+            emptyDescription="Completed and paid projects move here automatically."
+          />
         </TabsContent>
       </Tabs>
     </div>

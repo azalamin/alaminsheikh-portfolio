@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/guards";
 import { projectSchema } from "@/lib/validations/project";
 import { testimonialSchema } from "@/lib/validations/testimonial";
@@ -21,7 +20,7 @@ import {
   setServicePublished,
 } from "@/services/content-service";
 
-export type ContentFormState = { error: string } | undefined;
+export type ContentFormState = { error: string } | { success: true } | undefined;
 
 // Projects
 
@@ -51,7 +50,7 @@ export async function createProjectAction(
   }
   await createProject(parsed.data);
   revalidatePath("/admin/projects");
-  redirect("/admin/projects");
+  return { success: true };
 }
 
 export async function updateProjectAction(
@@ -66,7 +65,7 @@ export async function updateProjectAction(
   }
   await updateProject(id, parsed.data);
   revalidatePath("/admin/projects");
-  redirect("/admin/projects");
+  return { success: true };
 }
 
 export async function deleteProjectAction(id: string) {
@@ -104,7 +103,7 @@ export async function createTestimonialAction(
   }
   await createTestimonial(parsed.data);
   revalidatePath("/admin/testimonials");
-  redirect("/admin/testimonials");
+  return { success: true };
 }
 
 export async function updateTestimonialAction(
@@ -119,7 +118,7 @@ export async function updateTestimonialAction(
   }
   await updateTestimonial(id, parsed.data);
   revalidatePath("/admin/testimonials");
-  redirect("/admin/testimonials");
+  return { success: true };
 }
 
 export async function deleteTestimonialAction(id: string) {
@@ -156,7 +155,7 @@ export async function createServiceAction(
   }
   await createService(parsed.data);
   revalidatePath("/admin/services");
-  redirect("/admin/services");
+  return { success: true };
 }
 
 export async function updateServiceAction(
@@ -171,7 +170,7 @@ export async function updateServiceAction(
   }
   await updateService(id, parsed.data);
   revalidatePath("/admin/services");
-  redirect("/admin/services");
+  return { success: true };
 }
 
 export async function deleteServiceAction(id: string) {

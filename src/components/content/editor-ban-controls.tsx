@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { banEditorAction, unbanEditorAction } from "@/actions/users";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { ActionButton } from "@/components/dashboard/action-button";
 import {
   Dialog,
   DialogContent,
@@ -30,8 +32,13 @@ export function BanEditorButton({ userId, name }: { userId: string; name: string
         </DialogHeader>
         <form
           action={async (formData) => {
-            await banEditorAction(userId, String(formData.get("reason") ?? ""));
-            setOpen(false);
+            try {
+              await banEditorAction(userId, String(formData.get("reason") ?? ""));
+              toast.success(`${name} deactivated.`);
+              setOpen(false);
+            } catch {
+              toast.error("Could not deactivate. Please try again.");
+            }
           }}
           className="flex flex-col gap-4"
         >
@@ -50,12 +57,15 @@ export function BanEditorButton({ userId, name }: { userId: string; name: string
   );
 }
 
-export function UnbanEditorButton({ userId }: { userId: string }) {
+export function UnbanEditorButton({ userId, name }: { userId: string; name: string }) {
   return (
-    <form action={unbanEditorAction.bind(null, userId)}>
-      <Button type="submit" variant="ghost" size="sm">
-        Reactivate
-      </Button>
-    </form>
+    <ActionButton
+      action={unbanEditorAction.bind(null, userId)}
+      successMessage={`${name} reactivated.`}
+      variant="ghost"
+      size="sm"
+    >
+      Reactivate
+    </ActionButton>
   );
 }

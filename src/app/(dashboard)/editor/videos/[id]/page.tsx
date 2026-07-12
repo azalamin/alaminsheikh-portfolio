@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { getSession } from "@/lib/guards";
 import { getVideoProjectById } from "@/services/video-project-service";
+import { formatCurrency } from "@/lib/currency";
 import { ProgressUpdateForm } from "@/components/progress-update-form";
-import { VideoStatusBadge } from "@/components/status-badges";
+import { VideoStatusBadge, PaymentStatusBadge } from "@/components/status-badges";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 
@@ -29,9 +30,10 @@ export default async function EditorVideoDetailPage({
 
   return (
     <div className="flex flex-col gap-8 max-w-3xl">
-      <div className="flex items-center gap-3">
-        <h1 className="text-2xl font-semibold">{project.title}</h1>
+      <div className="flex flex-wrap items-center gap-3">
+        <h1 className="text-2xl">{project.title}</h1>
         <VideoStatusBadge status={project.status} />
+        <PaymentStatusBadge status={project.paymentStatus} />
       </div>
 
       <Card>
@@ -40,13 +42,14 @@ export default async function EditorVideoDetailPage({
         </CardHeader>
         <CardContent className="flex flex-col gap-1 text-sm text-muted-foreground">
           <p>{project.description}</p>
-          <p className="pt-2">Deadline: {project.deadline.toLocaleDateString()}</p>
+          <p className="pt-2">Agreed amount: {formatCurrency(project.amount.toString())}</p>
+          <p>Deadline: {project.deadline.toLocaleDateString()}</p>
           <p>{project.progress}% complete</p>
         </CardContent>
       </Card>
 
       <div>
-        <h2 className="text-lg font-medium mb-4">Post an update</h2>
+        <h2 className="text-lg mb-4">Post an update</h2>
         <ProgressUpdateForm
           videoProjectId={project.id}
           currentStatus={project.status}
@@ -58,7 +61,7 @@ export default async function EditorVideoDetailPage({
       <Separator />
 
       <div>
-        <h2 className="text-lg font-medium mb-4">History</h2>
+        <h2 className="text-lg mb-4">History</h2>
         {project.progressUpdates.length === 0 ? (
           <p className="text-sm text-muted-foreground">No updates yet.</p>
         ) : (

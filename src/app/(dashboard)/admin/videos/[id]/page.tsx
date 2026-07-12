@@ -6,14 +6,10 @@ import {
 import { updateVideoProjectAction, togglePaymentStatusAction } from "@/actions/video-projects";
 import { VideoProjectForm } from "@/components/video-project-form";
 import { VideoStatusBadge, PaymentStatusBadge } from "@/components/status-badges";
-import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/lib/currency";
+import { ActionButton } from "@/components/dashboard/action-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-
-const currency = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-});
 
 export default async function AdminVideoDetailPage({
   params,
@@ -30,25 +26,23 @@ export default async function AdminVideoDetailPage({
     notFound();
   }
 
-  const toggleAction = togglePaymentStatusAction.bind(
-    null,
-    project.id,
-    project.paymentStatus
-  );
-
   return (
     <div className="flex flex-col gap-8 max-w-3xl">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-semibold">{project.title}</h1>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-2xl">{project.title}</h1>
           <VideoStatusBadge status={project.status} />
           <PaymentStatusBadge status={project.paymentStatus} />
         </div>
-        <form action={toggleAction}>
-          <Button type="submit" variant="outline">
-            Mark as {project.paymentStatus === "PAID" ? "unpaid" : "paid"}
-          </Button>
-        </form>
+        <ActionButton
+          action={togglePaymentStatusAction.bind(null, project.id, project.paymentStatus)}
+          successMessage={
+            project.paymentStatus === "PAID" ? "Marked as unpaid." : "Marked as paid."
+          }
+          variant="outline"
+        >
+          Mark as {project.paymentStatus === "PAID" ? "unpaid" : "paid"}
+        </ActionButton>
       </div>
 
       <Card>
@@ -58,7 +52,7 @@ export default async function AdminVideoDetailPage({
         <CardContent className="flex flex-col gap-1 text-sm text-muted-foreground">
           <p>{project.progress}% complete</p>
           <p>Editor: {project.editor?.name ?? "Unassigned"}</p>
-          <p>Amount: {currency.format(Number(project.amount))}</p>
+          <p>Amount: {formatCurrency(project.amount.toString())}</p>
           <p>Deadline: {project.deadline.toLocaleDateString()}</p>
           <p>
             Estimated completion:{" "}
@@ -68,11 +62,12 @@ export default async function AdminVideoDetailPage({
       </Card>
 
       <div>
-        <h2 className="text-lg font-medium mb-4">Edit project</h2>
+        <h2 className="text-lg mb-4">Edit project</h2>
         <VideoProjectForm
           action={updateVideoProjectAction.bind(null, project.id)}
           editors={editors}
           submitLabel="Save changes"
+          successMessage="Video project updated."
           defaultValues={{
             title: project.title,
             description: project.description,
@@ -86,7 +81,7 @@ export default async function AdminVideoDetailPage({
       <Separator />
 
       <div>
-        <h2 className="text-lg font-medium mb-4">Progress timeline</h2>
+        <h2 className="text-lg mb-4">Progress timeline</h2>
         {project.progressUpdates.length === 0 ? (
           <p className="text-sm text-muted-foreground">No updates yet.</p>
         ) : (

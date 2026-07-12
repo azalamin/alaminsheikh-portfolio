@@ -1,7 +1,9 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/guards";
-import { SignOutButton } from "@/components/sign-out-button";
+import { EditorSidebar } from "@/components/dashboard/editor-sidebar";
+import { UserMenu } from "@/components/dashboard/user-menu";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 
 export default async function EditorLayout({
   children,
@@ -19,23 +21,19 @@ export default async function EditorLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b">
-        <div className="flex items-center justify-between px-6 py-4">
-          <nav className="flex items-center gap-6">
-            <Link href="/editor" className="font-semibold">
-              My videos
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <Link href="/change-password" className="text-sm text-muted-foreground hover:text-foreground">
-              {session.user.name}
-            </Link>
-            <SignOutButton />
+    <SidebarProvider>
+      <EditorSidebar />
+      <SidebarInset>
+        <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b px-4">
+          <div className="flex items-center gap-2">
+            <SidebarTrigger />
+            <Separator orientation="vertical" className="h-5" />
+            <span className="text-sm text-muted-foreground">Editor</span>
           </div>
-        </div>
-      </header>
-      <main className="flex-1 p-6">{children}</main>
-    </div>
+          <UserMenu name={session.user.name} email={session.user.email} />
+        </header>
+        <main className="flex-1 p-4 md:p-6">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

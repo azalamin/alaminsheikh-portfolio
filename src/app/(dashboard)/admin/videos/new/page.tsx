@@ -7,11 +7,12 @@ export default async function NewVideoProjectPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold">New video project</h1>
+      <h1 className="text-2xl">New video project</h1>
       <VideoProjectForm
         action={createVideoProjectAction}
         editors={editors}
         submitLabel="Create project"
+        successMessage="Video project created."
       />
     </div>
   );

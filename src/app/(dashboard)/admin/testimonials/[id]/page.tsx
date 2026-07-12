@@ -17,7 +17,7 @@ export default async function EditTestimonialPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold">Edit testimonial</h1>
+      <h1 className="text-2xl">Edit testimonial</h1>
       <TestimonialForm
         action={updateTestimonialAction.bind(null, testimonial.id)}
         submitLabel="Save changes"

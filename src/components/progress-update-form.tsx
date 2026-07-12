@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
+import { toast } from "sonner";
 import { postProgressUpdateAction } from "@/actions/progress-updates";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,9 +39,18 @@ export function ProgressUpdateForm({
     undefined
   );
 
+  useEffect(() => {
+    if (!state) return;
+    if ("error" in state) {
+      toast.error(state.error);
+    } else if (state.success) {
+      toast.success("Progress update posted.");
+    }
+  }, [state]);
+
   return (
     <form action={formAction} className="flex flex-col gap-4 max-w-xl">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
           <Label htmlFor="status">Status</Label>
           <Select name="status" defaultValue={currentStatus}>
@@ -91,7 +101,7 @@ export function ProgressUpdateForm({
         />
       </div>
 
-      {state?.error && (
+      {state && "error" in state && (
         <p className="text-sm text-destructive" role="alert">
           {state.error}
         </p>

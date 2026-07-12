@@ -17,7 +17,7 @@ export default async function EditProjectPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl font-semibold">Edit project</h1>
+      <h1 className="text-2xl">Edit project</h1>
       <ProjectForm
         action={updateProjectAction.bind(null, project.id)}
         submitLabel="Save changes"
