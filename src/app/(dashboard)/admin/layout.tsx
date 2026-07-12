@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/guards";
 import { AdminSidebar } from "@/components/dashboard/admin-sidebar";
 import { UserMenu } from "@/components/dashboard/user-menu";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 
@@ -30,7 +31,10 @@ export default async function AdminLayout({
             <Separator orientation="vertical" className="h-5" />
             <span className="text-sm text-muted-foreground">Admin</span>
           </div>
-          <UserMenu name={session.user.name} email={session.user.email} />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <UserMenu name={session.user.name} email={session.user.email} />
+          </div>
         </header>
         <main className="flex-1 p-4 md:p-6">{children}</main>
       </SidebarInset>
