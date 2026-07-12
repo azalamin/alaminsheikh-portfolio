@@ -1,3 +1,16 @@
+allowBuilds:
+  '@prisma/client': false
+  '@prisma/engines': true
+  better-sqlite3: false
+  esbuild: true
+  prisma: true
+  sharp: false
+  unrs-resolver: false
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+  - better-sqlite3
+  - '@prisma/client'
+minimumReleaseAgeExclude:
+  - nanoid@3.3.16
+  - postcss@8.5.17
