@@ -1,0 +1,38 @@
+import nodemailer from "nodemailer";
+
+// Gmail SMTP with an app password. Isolated here so a later swap to
+// another provider (e.g. Resend) only touches this file.
+const GMAIL_USER = process.env.GOOGLE_CLIENT_ID;
+const GMAIL_APP_PASSWORD = process.env.GOOGLE_CLIENT_SECRET;
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: GMAIL_USER,
+    pass: GMAIL_APP_PASSWORD,
+  },
+});
+
+export async function sendEditorInviteEmail(params: {
+  to: string;
+  name: string;
+  tempPassword: string;
+}) {
+  const loginUrl = new URL("/login", process.env.BETTER_AUTH_URL).toString();
+
+  await transporter.sendMail({
+    from: GMAIL_USER,
+    to: params.to,
+    subject: "Your dashboard access",
+    text: [
+      `Hi ${params.name},`,
+      "",
+      "An editor account has been created for you.",
+      "",
+      `Email: ${params.to}`,
+      `Temporary password: ${params.tempPassword}`,
+      "",
+      `Sign in at ${loginUrl} — you'll be asked to set a new password on first login.`,
+    ].join("\n"),
+  });
+}

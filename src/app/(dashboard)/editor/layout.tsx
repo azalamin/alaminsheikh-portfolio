@@ -14,6 +14,10 @@ export default async function EditorLayout({
     redirect("/login");
   }
 
+  if (session.user.mustChangePassword) {
+    redirect("/change-password");
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b">
@@ -24,7 +28,9 @@ export default async function EditorLayout({
             </Link>
           </nav>
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">{session.user.name}</span>
+            <Link href="/change-password" className="text-sm text-muted-foreground hover:text-foreground">
+              {session.user.name}
+            </Link>
             <SignOutButton />
           </div>
         </div>

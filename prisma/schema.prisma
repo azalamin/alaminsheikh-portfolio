@@ -30,6 +30,8 @@ model User {
   videoProjects   VideoProject[]
   progressUpdates ProgressUpdate[]
 
+  mustChangePassword Boolean? @default(false)
+
   @@unique([email])
   @@map("user")
 }
@@ -96,20 +98,20 @@ enum PaymentStatus {
 }
 
 model VideoProject {
-  id             String        @id @default(cuid())
-  title          String
-  description    String
-  amount         Decimal       @db.Decimal(10, 2)
-  status         VideoStatus   @default(NOT_STARTED)
-  paymentStatus  PaymentStatus @default(UNPAID)
-  progress       Int           @default(0)
-  deadline       DateTime
-  estCompletion  DateTime?
-  editorId       String?
-  editor         User?           @relation(fields: [editorId], references: [id])
+  id              String           @id @default(cuid())
+  title           String
+  description     String
+  amount          Decimal          @db.Decimal(10, 2)
+  status          VideoStatus      @default(NOT_STARTED)
+  paymentStatus   PaymentStatus    @default(UNPAID)
+  progress        Int              @default(0)
+  deadline        DateTime
+  estCompletion   DateTime?
+  editorId        String?
+  editor          User?            @relation(fields: [editorId], references: [id])
   progressUpdates ProgressUpdate[]
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
 
   @@index([editorId])
   @@map("video_project")
@@ -131,19 +133,19 @@ model ProgressUpdate {
 }
 
 model Project {
-  id        String   @id @default(cuid())
-  title     String
-  slug      String   @unique
-  summary   String
-  content   String
+  id         String   @id @default(cuid())
+  title      String
+  slug       String   @unique
+  summary    String
+  content    String
   coverImage String?
-  techStack String[]
-  liveUrl   String?
-  featured  Boolean  @default(false)
-  published Boolean  @default(false)
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  techStack  String[]
+  liveUrl    String?
+  featured   Boolean  @default(false)
+  published  Boolean  @default(false)
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@map("project")
 }
@@ -159,6 +161,18 @@ model Testimonial {
   updatedAt  DateTime @updatedAt
 
   @@map("testimonial")
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  published   Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("service")
 }
 
 model ContactSubmission {
