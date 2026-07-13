@@ -48,6 +48,7 @@ export async function postProgressUpdateAction(
     await sendVideoStatusChangeEmail({
       projectTitle: updatedProject.title,
       editorName: session.user.name,
+      editorEmail: session.user.email,
       status: parsed.data.status,
       progress: parsed.data.progress,
       note: parsed.data.note,

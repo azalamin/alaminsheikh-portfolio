@@ -5,9 +5,12 @@ import { requireAdmin } from "@/lib/guards";
 import { videoProjectSchema } from "@/lib/validations/video-project";
 import {
   createVideoProject,
+  getEditorById,
   setPaymentStatus,
   updateVideoProjectDetails,
 } from "@/services/video-project-service";
+import { sendVideoAssignedEmail } from "@/services/mail";
+import { prisma } from "@/lib/prisma";
 import type { PaymentStatus } from "@/generated/prisma/enums";
 
 export type VideoProjectFormState =
@@ -25,6 +28,27 @@ function parseVideoProjectForm(formData: FormData) {
   });
 }
 
+async function notifyEditorOfAssignment(
+  editorId: string,
+  project: { title: string; description: string; amount: unknown; deadline: Date }
+) {
+  try {
+    const editor = await getEditorById(editorId);
+    if (!editor) return;
+
+    await sendVideoAssignedEmail({
+      to: editor.email,
+      editorName: editor.name,
+      projectTitle: project.title,
+      description: project.description,
+      amount: String(project.amount),
+      deadline: project.deadline,
+    });
+  } catch {
+    // The assignment is already saved; a failed notification shouldn't fail the request.
+  }
+}
+
 export async function createVideoProjectAction(
   _prevState: VideoProjectFormState,
   formData: FormData
@@ -37,6 +61,10 @@ export async function createVideoProjectAction(
   }
 
   const project = await createVideoProject(parsed.data);
+
+  if (project.editorId) {
+    await notifyEditorOfAssignment(project.editorId, project);
+  }
 
   revalidatePath("/admin/videos");
   return { success: true, id: project.id };
@@ -54,7 +82,17 @@ export async function updateVideoProjectAction(
     return { error: parsed.error.issues[0]?.message ?? "Check the form and try again." };
   }
 
-  await updateVideoProjectDetails(id, parsed.data);
+  const before = await prisma.videoProject.findUnique({
+    where: { id },
+    select: { editorId: true },
+  });
+
+  const project = await updateVideoProjectDetails(id, parsed.data);
+
+  const editorChanged = project.editorId && project.editorId !== before?.editorId;
+  if (editorChanged && project.editorId) {
+    await notifyEditorOfAssignment(project.editorId, project);
+  }
 
   revalidatePath(`/admin/videos/${id}`);
   revalidatePath("/admin/videos");

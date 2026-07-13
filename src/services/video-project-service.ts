@@ -23,6 +23,13 @@ export function listEditors() {
   });
 }
 
+export function getEditorById(id: string) {
+  return prisma.user.findUnique({
+    where: { id },
+    select: editorSummarySelect,
+  });
+}
+
 export function listAllVideoProjects() {
   return prisma.videoProject.findMany({
     include: { editor: { select: editorSummarySelect } },
