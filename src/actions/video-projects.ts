@@ -67,6 +67,8 @@ export async function createVideoProjectAction(
   }
 
   revalidatePath("/admin/videos");
+  revalidatePath("/editor");
+  revalidatePath("/editor/videos");
   return { success: true, id: project.id };
 }
 
@@ -96,6 +98,8 @@ export async function updateVideoProjectAction(
 
   revalidatePath(`/admin/videos/${id}`);
   revalidatePath("/admin/videos");
+  revalidatePath("/editor");
+  revalidatePath("/editor/videos");
   return { success: true, id };
 }
 
@@ -109,4 +113,6 @@ export async function togglePaymentStatusAction(
 
   revalidatePath(`/admin/videos/${id}`);
   revalidatePath("/admin/videos");
+  revalidatePath("/editor");
+  revalidatePath("/editor/videos");
 }

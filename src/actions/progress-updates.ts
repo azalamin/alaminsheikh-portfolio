@@ -58,6 +58,7 @@ export async function postProgressUpdateAction(
   }
 
   revalidatePath(`/editor/videos/${videoProjectId}`);
+  revalidatePath("/editor/videos");
   revalidatePath("/editor");
   return { success: true };
 }

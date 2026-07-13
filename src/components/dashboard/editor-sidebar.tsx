@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Clapperboard } from "lucide-react";
+import { LayoutDashboard, Clapperboard } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -16,6 +16,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
+const navLinks = [
+  { href: "/editor", label: "Overview", icon: LayoutDashboard, exact: true },
+  { href: "/editor/videos", label: "My videos", icon: Clapperboard },
+];
+
 export function EditorSidebar() {
   const pathname = usePathname();
   const { isMobile, setOpenMobile } = useSidebar();
@@ -23,25 +28,32 @@ export function EditorSidebar() {
   return (
     <Sidebar collapsible="offcanvas">
       <SidebarHeader className="px-4 py-4">
-        <span className="text-lg font-semibold">My videos</span>
+        <span className="text-lg font-semibold">Editor</span>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Workspace</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  isActive={pathname === "/editor"}
-                  onClick={() => {
-                    if (isMobile) setOpenMobile(false);
-                  }}
-                  render={<Link href="/editor" />}
-                >
-                  <Clapperboard />
-                  <span>My videos</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {navLinks.map((link) => {
+                const isActive = link.exact
+                  ? pathname === link.href
+                  : pathname.startsWith(link.href);
+                return (
+                  <SidebarMenuItem key={link.href}>
+                    <SidebarMenuButton
+                      isActive={isActive}
+                      onClick={() => {
+                        if (isMobile) setOpenMobile(false);
+                      }}
+                      render={<Link href={link.href} />}
+                    >
+                      <link.icon />
+                      <span>{link.label}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

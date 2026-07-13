@@ -49,7 +49,7 @@ export async function sendVideoAssignedEmail(params: {
   amount: string;
   deadline: Date;
 }) {
-  const dashboardUrl = new URL("/editor", process.env.BETTER_AUTH_URL).toString();
+  const dashboardUrl = new URL("/editor/videos", process.env.BETTER_AUTH_URL).toString();
 
   await transporter.sendMail({
     from: FROM_ADDRESS,
