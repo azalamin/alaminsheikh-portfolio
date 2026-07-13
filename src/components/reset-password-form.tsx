@@ -1,9 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState, useEffect } from "react";
 import { toast } from "sonner";
-import { login } from "@/actions/auth";
+import { resetPasswordAction } from "@/actions/reset-password";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,8 +14,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export function LoginForm() {
-  const [state, action, pending] = useActionState(login, undefined);
+export function ResetPasswordForm({ token }: { token?: string }) {
+  const [state, action, pending] = useActionState(resetPasswordAction, undefined);
 
   useEffect(() => {
     if (state?.error) {
@@ -24,35 +23,37 @@ export function LoginForm() {
     }
   }, [state]);
 
+  if (!token) {
+    return (
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle>Invalid link</CardTitle>
+          <CardDescription>
+            This password reset link is missing or invalid. Request a new one from the sign-in
+            page.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   return (
     <Card className="w-full max-w-sm">
       <CardHeader>
-        <CardTitle>Sign in</CardTitle>
-        <CardDescription>
-          Dashboard access is by invitation only.
-        </CardDescription>
+        <CardTitle>Set a new password</CardTitle>
+        <CardDescription>Choose a new password for your account.</CardDescription>
       </CardHeader>
       <CardContent>
         <form action={action} className="flex flex-col gap-4">
+          <input type="hidden" name="token" value={token} />
           <div className="flex flex-col gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" type="email" autoComplete="email" required />
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                href="/forgot-password"
-                className="text-sm text-muted-foreground underline"
-              >
-                Forgot password?
-              </Link>
-            </div>
+            <Label htmlFor="newPassword">New password</Label>
             <Input
-              id="password"
-              name="password"
+              id="newPassword"
+              name="newPassword"
               type="password"
-              autoComplete="current-password"
+              autoComplete="new-password"
+              minLength={8}
               required
             />
           </div>
@@ -62,7 +63,7 @@ export function LoginForm() {
             </p>
           )}
           <Button type="submit" disabled={pending} className="mt-2">
-            {pending ? "Signing in…" : "Sign in"}
+            {pending ? "Saving…" : "Set new password"}
           </Button>
         </form>
       </CardContent>

@@ -41,6 +41,28 @@ export async function sendEditorInviteEmail(params: {
   });
 }
 
+export async function sendPasswordResetEmail(params: {
+  to: string;
+  name: string;
+  url: string;
+}) {
+  await transporter.sendMail({
+    from: FROM_ADDRESS,
+    to: params.to,
+    replyTo: process.env.ADMIN_EMAIL,
+    subject: "Reset your password",
+    text: [
+      `Hi ${params.name},`,
+      "",
+      "We received a request to reset your password.",
+      "",
+      `Reset it here: ${params.url}`,
+      "",
+      "This link expires in 1 hour. If you didn't request this, you can safely ignore this email.",
+    ].join("\n"),
+  });
+}
+
 export async function sendVideoAssignedEmail(params: {
   to: string;
   editorName: string;

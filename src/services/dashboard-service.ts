@@ -1,23 +1,43 @@
 import { prisma } from "@/lib/prisma";
 
 export async function getAdminOverviewStats() {
-  const [activeVideos, unpaidAgg, unreadMessages] = await Promise.all([
+  const [
+    pendingVideos,
+    unpaidAgg,
+    paidAgg,
+    unreadMessages,
+    assignedVideos,
+    unassignedVideos,
+    completedVideos,
+    activeEditors,
+  ] = await Promise.all([
     prisma.videoProject.count({
-      where: {
-        NOT: { status: "COMPLETED", paymentStatus: "PAID" },
-      },
+      where: { NOT: { status: "COMPLETED" } },
     }),
     prisma.videoProject.aggregate({
       where: { paymentStatus: "UNPAID" },
       _sum: { amount: true },
     }),
+    prisma.videoProject.aggregate({
+      where: { paymentStatus: "PAID" },
+      _sum: { amount: true },
+    }),
     prisma.contactSubmission.count({ where: { read: false } }),
+    prisma.videoProject.count({ where: { editorId: { not: null } } }),
+    prisma.videoProject.count({ where: { editorId: null } }),
+    prisma.videoProject.count({ where: { status: "COMPLETED" } }),
+    prisma.user.count({ where: { role: "editor", banned: { not: true } } }),
   ]);
 
   return {
-    activeVideos,
+    pendingVideos,
     unpaidAmount: (unpaidAgg._sum.amount ?? 0).toString(),
+    totalSpent: (paidAgg._sum.amount ?? 0).toString(),
     unreadMessages,
+    assignedVideos,
+    unassignedVideos,
+    completedVideos,
+    activeEditors,
   };
 }
 
