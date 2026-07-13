@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireEditor, requireOwnership } from "@/lib/guards";
 import { progressUpdateSchema } from "@/lib/validations/video-project";
 import { addProgressUpdate } from "@/services/video-project-service";
+import { sendVideoStatusChangeEmail } from "@/services/mail";
 import { prisma } from "@/lib/prisma";
 
 export type ProgressUpdateFormState = { error: string } | { success: true } | undefined;
@@ -37,7 +38,23 @@ export async function postProgressUpdateAction(
     return { error: parsed.error.issues[0]?.message ?? "Check the form and try again." };
   }
 
-  await addProgressUpdate(videoProjectId, session.user.id, parsed.data);
+  const [updatedProject] = await addProgressUpdate(
+    videoProjectId,
+    session.user.id,
+    parsed.data
+  );
+
+  try {
+    await sendVideoStatusChangeEmail({
+      projectTitle: updatedProject.title,
+      editorName: session.user.name,
+      status: parsed.data.status,
+      progress: parsed.data.progress,
+      note: parsed.data.note,
+    });
+  } catch {
+    // The update is already saved; a failed notification shouldn't fail the request.
+  }
 
   revalidatePath(`/editor/videos/${videoProjectId}`);
   revalidatePath("/editor");

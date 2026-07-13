@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  LayoutDashboard,
   Clapperboard,
   FolderKanban,
   Quote,
@@ -24,6 +25,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const navLinks = [
+  { href: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { href: "/admin/videos", label: "Videos", icon: Clapperboard },
   { href: "/admin/projects", label: "Projects", icon: FolderKanban },
   { href: "/admin/testimonials", label: "Testimonials", icon: Quote },
@@ -47,7 +49,9 @@ export function AdminSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {navLinks.map((link) => {
-                const isActive = pathname.startsWith(link.href);
+                const isActive = link.exact
+                  ? pathname === link.href
+                  : pathname.startsWith(link.href);
                 return (
                   <SidebarMenuItem key={link.href}>
                     <SidebarMenuButton

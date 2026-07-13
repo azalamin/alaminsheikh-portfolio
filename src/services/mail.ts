@@ -37,6 +37,35 @@ export async function sendEditorInviteEmail(params: {
   });
 }
 
+export async function sendVideoStatusChangeEmail(params: {
+  projectTitle: string;
+  editorName: string;
+  status: string;
+  progress: number;
+  note: string;
+}) {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail) return;
+
+  const dashboardUrl = new URL("/admin/videos", process.env.BETTER_AUTH_URL).toString();
+
+  await transporter.sendMail({
+    from: GMAIL_USER,
+    to: adminEmail,
+    subject: `${params.projectTitle}: ${params.status} (${params.progress}%)`,
+    text: [
+      `${params.editorName} posted an update on "${params.projectTitle}".`,
+      "",
+      `Status: ${params.status}`,
+      `Progress: ${params.progress}%`,
+      "",
+      params.note,
+      "",
+      `View: ${dashboardUrl}`,
+    ].join("\n"),
+  });
+}
+
 export async function sendContactNotificationEmail(params: {
   name: string;
   email: string;
